@@ -1,12 +1,14 @@
 import csv
+import Fitting_curves
 from matplotlib import pyplot as plot
 import numpy
-import Fitting_curves
-from Stepping_all import run_sim,get_results()
+results = Fitting_curves.results
+from Stepping_all import run_sim,get_results
 import Fitting_module
-with open('fit_results.csv', 'rb') as csv_file:
-    reader = csv.reader(csv_file)
-    results = dict(reader)
+# with open('fit_results.csv', 'rb') as csv_file:
+#     reader = csv.reader(csv_file)
+#     results = dict(reader)
+results = run_all_fits(names,fit_types,initials,yo_vals,u_vals,data)
 
 tspan = numpy.linspace(0, 2000, 1000)
 stepped_vars = Fitting_curves.stepped_var

@@ -9,7 +9,7 @@ import scipy.optimize
  # there are now 18 data sets
 
 def get_type(name):                                                                  # based on intuition after seeing curves
-    if name == 'F1T' or name == 'Ps3H' or name == 'Ps3T' or name == 'Ps3Cc_measured':
+    if name == 'F1T' or name == 'Ps3T' or name == 'Ps3Cc_measured':
         fit_type = 'SOPTD'
 
     elif name == 'Ps2T' or name == 'Ps2Cc_measured':
@@ -64,21 +64,34 @@ ccss = ss_values['Cc']
 tss = ss_values['T']
 hss = ss_values['H']
 
+
 stepped_var = ['Ps1','Ps1','Ps1','Ps2','Ps2','Ps2','Ps3','Ps3','Ps3','Cao','Cao','Cao','Tbo','Tbo','Tbo','F1','F1','F1']
 tspan = numpy.linspace(0, 2000, 1000)
 data = get_results()
-names = data.keys()
+
+
+stepped_vars = ['Ps1','Ps2','Ps3','Cao','Tbo','F1']
+outputs = ['Cc_measured', 'T', 'H']
+names = []
+for i, input in enumerate(stepped_vars):
+    for j, output in enumerate(outputs):
+        names.append(str(input) + str(output))
+
+
+
+
 data_sets = [data[key] for key in names]
 fit_types = [get_type(name) for name in names]
 yo_vals = [ccss,tss,hss,ccss,tss,hss,ccss,tss,hss,ccss,tss,hss,ccss,tss,hss,ccss,tss,hss]
 initials = get_initials(fit_types)
 u_vals = [20,20,20,20,20,20,20,20,20,0.2*7.4,0.2*7.4,0.2*7.4,0.2*24,0.2*24,0.2*24,0.2*7.334e-4,0.2*7.334e-4,0.2*7.334e-4]
 
-results = run_all_fits(names,fit_types,initials,yo_vals,u_vals,data)
 
-import csv
+# results = run_all_fits(names,fit_types,initials,yo_vals,u_vals,data)
 
-with open('fit_results.csv','wb') as csv_file:
-    writer = csv.writer(csv_file)
-    for key,value in results.items():
-        writer.writerow([key,value])
+# import csv
+#
+# with open('fit_results.csv','wb') as csv_file:
+#     writer = csv.writer(csv_file)
+#     for i,name in enumerate(results.keys()):
+#         writer.writerow([name,results[name]])

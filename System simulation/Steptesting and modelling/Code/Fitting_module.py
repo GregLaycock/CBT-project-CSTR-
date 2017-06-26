@@ -27,7 +27,7 @@ def SOPTD(parameters,u,tspan,yo):    # form is k/(t1s+1)(t2s+1)
 
     k,tau1,tau2,theta = parameters
 
-    G1 = lti([0,kc], [tau1*tau2, (tau1+tau2), 1])
+    G1 = lti([0,k], [tau1*tau2, (tau1+tau2), 1])
     dt = tspan[1] - tspan[0]
     results = numpy.zeros(len(tspan))
     yvals = numpy.zeros(len(tspan))
@@ -48,7 +48,7 @@ def SOPTD(parameters,u,tspan,yo):    # form is k/(t1s+1)(t2s+1)
 
 def SOZPTD(parameters,u,tspan,yo):          # for a 2nd order response with a process zero (inverse responses) form is (c1*s+c2)/(t1s+1)(t2s+1)
 
-    k,tau1,tau2,theta = parameters
+    c1,c2,tau1,tau2,theta = parameters
 
     G1 = lti([c1,c2], [tau1*tau2, (tau1+tau2), 1])
     dt = tspan[1] - tspan[0]
