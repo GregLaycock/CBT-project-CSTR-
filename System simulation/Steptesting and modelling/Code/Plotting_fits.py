@@ -2,29 +2,33 @@ import csv
 import Fitting_curves
 from matplotlib import pyplot as plot
 import numpy
-results = Fitting_curves.results
+
+
+
+with open('fit_results.csv','rb') as f:
+    reader = csv.reader(f)
+    all_params = list(reader)
+
+
 from Stepping_all import run_sim,get_results
 import Fitting_module
-# with open('fit_results.csv', 'rb') as csv_file:
-#     reader = csv.reader(csv_file)
-#     results = dict(reader)
-results = run_all_fits(names,fit_types,initials,yo_vals,u_vals,data)
-
+names = Fitting_curves.names
 tspan = numpy.linspace(0, 2000, 1000)
 stepped_vars = Fitting_curves.stepped_var
 output_vars = ['Cc_measured','T','H','Cc_measured','T','H','Cc_measured','T','H','Cc_measured','T','H','Cc_measured','T','H','Cc_measured','T','H']
-data = Fitting_curves.data
+data = get_results()
+
 types = Fitting_curves.fit_types
 u_vals = [20,20,20,20,20,20,20,20,20,0.2*7.4,0.2*7.4,0.2*7.4,0.2*24,0.2*24,0.2*24,0.2*7.334e-4,0.2*7.334e-4,0.2*7.334e-4]
 yo_vals = Fitting_curves.yo_vals
-simdata = get_results()
+simdata = data
 
 # getting data from fits
 fitted = []
 
-for i,fit in enumerate(results['fit']):
-    parameters = results['optimal_parameters'][i]
-    model = results['type'][i]
+for i,fit in enumerate(names):
+    parameters = all_params[i]
+    model = types[i]
     u = u_vals[i]
     t = tspan
     yo = yo_vals[i]

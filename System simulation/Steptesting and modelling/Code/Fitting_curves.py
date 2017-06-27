@@ -28,13 +28,16 @@ def run_all_fits(names,fit_types,initials,yo_vals,u_vals,data):
     print('Running')
     count = 1
     for i, name in enumerate(names):
-        print('current fit is '+str(count)+' of 18')
+        print('current fit is '+str(count)+' of '+str(len(names)))
 
         model = fit_types[i]
         parameters = initials[i]
         u = u_vals[i]
         t = tspan
-        opt = scipy.optimize.minimize(error_func,parameters,args = (model,u,t,yo_vals[i],data[name]))
+        if name == 'F1T':
+            opt = opt = scipy.optimize.minimize(error_func,parameters,args = (model,u,t,yo_vals[i],data[name]), bounds = [[10e3,10e4],[50,500],[0,1],[0,200]])
+        else:
+            opt = scipy.optimize.minimize(error_func,parameters,args = (model,u,t,yo_vals[i],data[name]))
         fitted_params.append(opt.x)
         residual = opt.fun
         reserror[i] = residual
@@ -42,7 +45,7 @@ def run_all_fits(names,fit_types,initials,yo_vals,u_vals,data):
         print('completed fit '+str(count) + ' with residual sum abs error of '+str(residual))
         count += 1
 
-    fitting_results = {'fit': names, 'type': fit_types, 'initial': initials, 'optimal_paramters': fitted_params,'residuals':[reserror]}
+    fitting_results = {'fit': names, 'type': fit_types, 'initial': initials, 'optimal_parameters': fitted_params,'residuals':[reserror]}
     return fitting_results
 
 
@@ -52,11 +55,13 @@ def get_initials(types):
         if typ == 'FOPTD':
             initials.append([0.1,100,50])
         elif typ == 'SOPTD':
-            initials.append([0.1,100,100,50])
+            initials.append([-0.1,100,0.7,50])
         elif typ == 'SOZPTD':
             initials.append([-1,0.5,100,100,50])
 
+    initials[-2] = [50e3,100,0.65,50]
     return initials
+
 
 ################### initializing and running fits############
 ss_values = steady_state()
@@ -84,14 +89,16 @@ data_sets = [data[key] for key in names]
 fit_types = [get_type(name) for name in names]
 yo_vals = [ccss,tss,hss,ccss,tss,hss,ccss,tss,hss,ccss,tss,hss,ccss,tss,hss,ccss,tss,hss]
 initials = get_initials(fit_types)
+
 u_vals = [20,20,20,20,20,20,20,20,20,0.2*7.4,0.2*7.4,0.2*7.4,0.2*24,0.2*24,0.2*24,0.2*7.334e-4,0.2*7.334e-4,0.2*7.334e-4]
 
+#results = run_all_fits(names,fit_types,initials,yo_vals,u_vals,data)
 
-# results = run_all_fits(names,fit_types,initials,yo_vals,u_vals,data)
-
+# print(results['optimal_parameters'])
 # import csv
-#
+# params = results['optimal_parameters']
 # with open('fit_results.csv','wb') as csv_file:
 #     writer = csv.writer(csv_file)
-#     for i,name in enumerate(results.keys()):
-#         writer.writerow([name,results[name]])
+#     for i,fit in enumerate(params):
+#         fit = list(fit)
+#         writer.writerow(i)
