@@ -92,13 +92,10 @@ initials = get_initials(fit_types)
 
 u_vals = [20,20,20,20,20,20,20,20,20,0.2*7.4,0.2*7.4,0.2*7.4,0.2*24,0.2*24,0.2*24,0.2*7.334e-4,0.2*7.334e-4,0.2*7.334e-4]
 
-#results = run_all_fits(names,fit_types,initials,yo_vals,u_vals,data)
+results = run_all_fits(names,fit_types,initials,yo_vals,u_vals,data)
 
-# print(results['optimal_parameters'])
-# import csv
-# params = results['optimal_parameters']
-# with open('fit_results.csv','wb') as csv_file:
-#     writer = csv.writer(csv_file)
-#     for i,fit in enumerate(params):
-#         fit = list(fit)
-#         writer.writerow(i)
+import csv
+params = results['optimal_parameters']
+with open (r'Fit_results.csv', 'w', newline='') as write_file:
+    write = csv.writer(write_file)
+    write.writerows(fit for fit in params)
