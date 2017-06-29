@@ -35,7 +35,7 @@ def run_all_fits(names,fit_types,initials,yo_vals,u_vals,data):
         u = u_vals[i]
         t = tspan
         if name == 'F1T':
-            opt = opt = scipy.optimize.minimize(error_func,parameters,args = (model,u,t,yo_vals[i],data[name]), bounds = [[10e3,10e4],[50,500],[0,1],[0,200]])
+            opt = scipy.optimize.minimize(error_func,parameters,args = (model,u,t,yo_vals[i],data[name]), bounds = [[10e3,10e4],[50,500],[0,1],[0,200]])
         else:
             opt = scipy.optimize.minimize(error_func,parameters,args = (model,u,t,yo_vals[i],data[name]))
         fitted_params.append(opt.x)
@@ -55,11 +55,12 @@ def get_initials(types):
         if typ == 'FOPTD':
             initials.append([0.1,100,50])
         elif typ == 'SOPTD':
-            initials.append([-0.1,100,0.7,50])
+            initials.append([-0.01,100,0.7,50])
         elif typ == 'SOZPTD':
             initials.append([-1,0.5,100,100,50])
 
-    initials[-2] = [50e3,100,0.65,50]
+    if len(types) == 18:
+        initials[-2] = [15e3,100,0.65,50]
     return initials
 
 

@@ -3,7 +3,7 @@ from matplotlib import pyplot as plot
 import numpy
 from Fitting_curves import get_type
 from steady_state_values import steady_state
-
+import Fitting_module
 
 filename = 'fit_results.csv'
 with open(filename, 'rU') as p:
@@ -13,7 +13,7 @@ with open(filename, 'rU') as p:
 all_params = [[float(i) for i in my_list[j]] for j,lis in enumerate(my_list)]
 
 from Stepping_all import run_sim,get_results
-import Fitting_module
+
 
 tspan = numpy.linspace(0, 2000, 1000)
 output_vars = ['Cc_measured','T','H','Cc_measured','T','H','Cc_measured','T','H','Cc_measured','T','H','Cc_measured','T','H','Cc_measured','T','H']

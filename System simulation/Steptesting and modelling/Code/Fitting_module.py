@@ -27,7 +27,7 @@ def SOPTD(parameters,u,tspan,yo):    # form is k/(t1s+1)(t2s+1)
 
     k,tau,zeta,theta = parameters
 
-    G1 = lti([0,k], [tau**2,2*zeta*tau, 1])
+    G1 = lti([k], [tau**2,2*zeta*tau, 1])
     dt = tspan[1] - tspan[0]
     results = numpy.zeros(len(tspan))
     yvals = numpy.zeros(len(tspan))
