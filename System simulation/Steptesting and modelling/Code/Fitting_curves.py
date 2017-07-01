@@ -12,7 +12,7 @@ def get_type(name):                                                             
     if name == 'F1T' or name == 'Ps3T' or name == 'Ps3Cc_measured':
         fit_type = 'SOPTD'
 
-    elif name == 'Ps2T' or name == 'Ps2Cc_measured':
+    elif name == 'Ps2T' or name == 'Ps2Cc_measured' or name == 'F1Cc_measured':
         fit_type = 'SOZPTD'
 
     else:
@@ -27,17 +27,36 @@ def run_all_fits(names,fit_types,initials,yo_vals,u_vals,data):
     reserror = numpy.zeros(len(names))
     print('Running')
     count = 1
+
     for i, name in enumerate(names):
+        bound = {'FOPTD': [[None, None], [None, None], [None, None]],
+                 'SOPTD': [[None, None], [None, None], [None, None], [None, None]],
+                 'SOZPTD': [[None, None], [None, None], [None, None], [None, None], [None, None]]}
         print('current fit is '+str(count)+' of '+str(len(names)))
 
         model = fit_types[i]
         parameters = initials[i]
         u = u_vals[i]
         t = tspan
+        bnds = bound[model]
         if name == 'F1T':
             opt = scipy.optimize.minimize(error_func,parameters,args = (model,u,t,yo_vals[i],data[name]), bounds = [[10e3,10e4],[50,500],[0,1],[0,200]])
+
+        elif name == 'F1Cc_measured'or name =='TboCc_measured'or name =='CaoCc_measured'or name =='Ps2Cc_measured'or name =='Ps1Cc_measured' :
+            bnds[-1] = [0,120]
+            opt = scipy.optimize.minimize(error_func, parameters,args=(model, u, t, yo_vals[i], data[name]),bounds=bnds)
+        elif name == 'Ps1T' or name == 'Ps2T':
+            bnds[-1] = [0,30]
+            opt = scipy.optimize.minimize(error_func, parameters, args=(model, u, t, yo_vals[i], data[name]),
+                                          bounds=bnds)
+        elif name == 'Ps1H' or name == 'Ps2H' or name == 'Ps3T':
+            bnds[-1] = [0,15]
+            opt = scipy.optimize.minimize(error_func, parameters, args=(model, u, t, yo_vals[i], data[name]),
+                                          bounds=bnds)
+
         else:
-            opt = scipy.optimize.minimize(error_func,parameters,args = (model,u,t,yo_vals[i],data[name]))
+            bnds[-1] = [0,0]
+            opt = scipy.optimize.minimize(error_func,parameters,args = (model,u,t,yo_vals[i],data[name]),bounds = bnds)
         fitted_params.append(opt.x)
         residual = opt.fun
         reserror[i] = residual
@@ -57,7 +76,7 @@ def get_initials(types):
         elif typ == 'SOPTD':
             initials.append([-0.01,100,0.7,50])
         elif typ == 'SOZPTD':
-            initials.append([-1,0.5,100,100,50])
+            initials.append([-1,0.5,50,200,50])
 
     if len(types) == 18:
         initials[-2] = [15e3,100,0.65,50]
@@ -93,10 +112,10 @@ initials = get_initials(fit_types)
 
 u_vals = [20,20,20,20,20,20,20,20,20,0.2*7.4,0.2*7.4,0.2*7.4,0.2*24,0.2*24,0.2*24,0.2*7.334e-4,0.2*7.334e-4,0.2*7.334e-4]
 
-results = run_all_fits(names,fit_types,initials,yo_vals,u_vals,data)
-
-import csv
-params = results['optimal_parameters']
-with open (r'Fit_results.csv', 'w', newline='') as write_file:
-    write = csv.writer(write_file)
-    write.writerows(fit for fit in params)
+# results = run_all_fits(names,fit_types,initials,yo_vals,u_vals,data)
+#
+# import csv
+# params = results['optimal_parameters']
+# with open (r'Fit_results.csv', 'w', newline='') as write_file:
+#     write = csv.writer(write_file)
+#     write.writerows(fit for fit in params)

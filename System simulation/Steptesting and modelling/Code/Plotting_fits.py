@@ -14,6 +14,33 @@ all_params = [[float(i) for i in my_list[j]] for j,lis in enumerate(my_list)]
 
 from Stepping_all import run_sim,get_results
 
+def round2SignifFigs(vals,n):
+    import numpy as np
+    np.set_printoptions(precision=2)
+    """
+    (list, int) -> numpy array
+    (numpy array, int) -> numpy array
+
+    In: a list/array of values
+    Out: array of values rounded to n significant figures
+
+    Does not accept: inf, nan, complex
+
+    >>> m = [0.0, -1.2366e22, 1.2544444e-15, 0.001222]
+    >>> round2SignifFigs(m,2)
+    array([  0.00e+00,  -1.24e+22,   1.25e-15,   1.22e-03])
+    """
+    if np.all(np.isfinite(vals)) and np.all(np.isreal((vals))):
+        eset = np.seterr(all='ignore')
+        mags = 10.0**np.floor(np.log10(np.abs(vals)))  # omag's
+        vals = np.around(vals/mags,n)*mags             # round(val/omag)*omag
+        np.seterr(**eset)
+        vals[np.where(np.isnan(vals))] = 0.0           # 0.0 -> nan -> 0.0
+    else:
+        raise IOError('Input must be real and finite')
+    return vals
+
+all_params = [round2SignifFigs(i,2) for i in all_params]
 
 tspan = numpy.linspace(0, 2000, 1000)
 output_vars = ['Cc_measured','T','H','Cc_measured','T','H','Cc_measured','T','H','Cc_measured','T','H','Cc_measured','T','H','Cc_measured','T','H']
