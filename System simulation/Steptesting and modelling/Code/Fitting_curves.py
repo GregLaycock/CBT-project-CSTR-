@@ -42,21 +42,20 @@ def run_all_fits(names,fit_types,initials,yo_vals,u_vals,data):
         if name == 'F1T':
             opt = scipy.optimize.minimize(error_func,parameters,args = (model,u,t,yo_vals[i],data[name]), bounds = [[10e3,10e4],[50,500],[0,1],[0,200]])
 
-        elif name == 'F1Cc_measured'or name =='TboCc_measured'or name =='CaoCc_measured'or name =='Ps2Cc_measured'or name =='Ps1Cc_measured' :
-            bnds[-1] = [0,120]
-            opt = scipy.optimize.minimize(error_func, parameters,args=(model, u, t, yo_vals[i], data[name]),bounds=bnds)
-        elif name == 'Ps1T' or name == 'Ps2T':
-            bnds[-1] = [0,30]
-            opt = scipy.optimize.minimize(error_func, parameters, args=(model, u, t, yo_vals[i], data[name]),
-                                          bounds=bnds)
-        elif name == 'Ps1H' or name == 'Ps2H' or name == 'Ps3T':
-            bnds[-1] = [0,15]
-            opt = scipy.optimize.minimize(error_func, parameters, args=(model, u, t, yo_vals[i], data[name]),
-                                          bounds=bnds)
+        # elif name == 'F1Cc_measured'or name =='TboCc_measured'or name =='CaoCc_measured'or name =='Ps2Cc_measured'or name =='Ps1Cc_measured' :
+        #     bnds[-1] = [0,120]
+        #     opt = scipy.optimize.minimize(error_func, parameters,args=(model, u, t, yo_vals[i], data[name]),bounds=bnds)
+        # elif name == 'Ps1T' or name == 'Ps2T':
+        #     bnds[-1] = [0,30]
+        #     opt = scipy.optimize.minimize(error_func, parameters, args=(model, u, t, yo_vals[i], data[name]),
+        #                                   bounds=bnds)
+        # elif name == 'Ps1H' or name == 'Ps2H' or name == 'Ps3T':
+        #     bnds[-1] = [0,15]
+        #     opt = scipy.optimize.minimize(error_func, parameters, args=(model, u, t, yo_vals[i], data[name]),
+        #                                   bounds=bnds)
 
         else:
-            bnds[-1] = [0,0]
-            opt = scipy.optimize.minimize(error_func,parameters,args = (model,u,t,yo_vals[i],data[name]),bounds = bnds)
+            opt = scipy.optimize.minimize(error_func,parameters,args = (model,u,t,yo_vals[i],data[name]))
         fitted_params.append(opt.x)
         residual = opt.fun
         reserror[i] = residual
@@ -72,14 +71,14 @@ def get_initials(types):
     initials = []
     for i, typ in enumerate(types):
         if typ == 'FOPTD':
-            initials.append([0.1,100,50])
+            initials.append([0.1,100,20])
         elif typ == 'SOPTD':
             initials.append([-0.01,100,0.7,50])
         elif typ == 'SOZPTD':
-            initials.append([-1,0.5,50,200,50])
+            initials.append([-1,0.5,50,200,20])
 
     if len(types) == 18:
-        initials[-2] = [15e3,100,0.65,50]
+        initials[-2] = [15e3,100,0.65,20]
     return initials
 
 
